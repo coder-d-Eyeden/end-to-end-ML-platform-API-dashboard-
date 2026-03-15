@@ -129,20 +129,15 @@ conda install pandas numpy scikit-learn matplotlib seaborn jupyter -y
 pip install xgboost lightgbm shap plotly streamlit fastapi uvicorn pydantic ipykernel joblib python-dotenv
 ```
 
-### 4. Register the Jupyter kernel
 
-```bash
-python -m ipykernel install --user --name healthcare --display-name "Healthcare ML"
-```
-
-### 5. Download the datasets
+### 5=4. Download the datasets
 
 | File | Download link | Save as |
 |---|---|---|
 | Pima Indians | [Kaggle link](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database) | `data/raw/pima_diabetes.csv` |
 | 130-US Hospitals | [Kaggle link](https://www.kaggle.com/datasets/brandao/diabetes) | `data/raw/130_diabetic_data.csv` |
 
-### 6. Verify setup
+### 5. Verify setup
 
 ```bash
 python verify_setup.py
