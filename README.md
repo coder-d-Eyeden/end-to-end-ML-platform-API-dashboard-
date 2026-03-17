@@ -13,7 +13,7 @@
 
 ## What this project does
 
-This platform takes two real-world diabetes datasets and turns them into a fully working ML product — not just a collection of notebooks. A doctor (or interviewer) can open the Streamlit app, enter a patient's details, and immediately get:
+This platform takes two real-world diabetes datasets and turns them into a fully working ML product. A doctor (or interviewer) can open the Streamlit app, enter a patient's details, and immediately get:
 
 - A **readmission risk score** (0–100)
 - A **disease prediction** with probability
@@ -31,7 +31,7 @@ This platform takes two real-world diabetes datasets and turns them into a fully
 | Pima Indians Diabetes | [UCI / Kaggle](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database) | Regression, Classification, Clustering, Anomaly Detection |
 | Diabetes 130-US Hospitals | [Kaggle](https://www.kaggle.com/datasets/brandao/diabetes) | Recommendation engine |
 
-Download both CSVs and place them in `data/raw/` — see Setup below.
+Download both CSVs and place them in `dataset/raw/` — see Setup below.
 
 ---
 
@@ -53,7 +53,7 @@ Download both CSVs and place them in `data/raw/` — see Setup below.
 ```
 healthcare-ml-platform/
 │
-├── data/
+├── Dataset/
 │   ├── raw/                          ← Place downloaded CSVs here
 │   │   ├── pima_diabetes.csv
 │   │   └── 130_diabetic_data.csv
@@ -125,8 +125,8 @@ conda activate healthcare
 ### 3. Install dependencies
 
 ```bash
-conda install pandas numpy scikit-learn matplotlib seaborn jupyter -y
-pip install xgboost lightgbm shap plotly streamlit fastapi uvicorn pydantic ipykernel joblib python-dotenv
+
+pip install -r requirements.txt
 ```
 
 
@@ -134,31 +134,8 @@ pip install xgboost lightgbm shap plotly streamlit fastapi uvicorn pydantic ipyk
 
 | File | Download link | Save as |
 |---|---|---|
-| Pima Indians | [Kaggle link](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database) | `data/raw/pima_diabetes.csv` |
-| 130-US Hospitals | [Kaggle link](https://www.kaggle.com/datasets/brandao/diabetes) | `data/raw/130_diabetic_data.csv` |
-
-### 5. Verify setup
-
-```bash
-python verify_setup.py
-```
-
-Expected output:
-```
-✓  data/raw/
-✓  data/processed/
-✓  notebooks/
-✓  src/
-✓  models/
-✓  app/
-✓  api/
-✓  outputs/
-
-✓  pima_diabetes.csv     → 768 rows, 9 cols
-✓  130_diabetic_data.csv → 101766 rows, 50 cols
-
-Setup complete.
-```
+| Pima Indians | [Kaggle link](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database) | `Dataset/raw/pima_diabetes.csv` |
+| 130-US Hospitals | [Kaggle link](https://www.kaggle.com/datasets/brandao/diabetes) | `Dataset/raw/130_diabetic_data.csv` |
 
 ---
 
@@ -170,12 +147,12 @@ Open Jupyter and select the **Healthcare ML** kernel:
 jupyter notebook
 ```
 
-Run notebooks in order — each one saves its output to `data/processed/` or `models/` for the next notebook to use:
+Run notebooks in order — each one saves its output to `Dataset/processed/` or `models/` for the next notebook to use:
 
 ```
-01_EDA_pima           →  data/processed/pima_clean.csv
-02_EDA_diabetes130    →  data/processed/diabetes130_clean.csv
-                          data/processed/treatment_lookup.csv
+01_EDA_pima           →  Dataset/processed/pima_clean.csv
+02_EDA_diabetes130    →  Dataset/processed/diabetes130_clean.csv
+                          Dataset/processed/treatment_lookup.csv
 03_feature_eng        →  fitted pipeline objects
 04_regression         →  models/regression_xgb.pkl
 05_classification     →  models/classification_rf.pkl
@@ -265,7 +242,7 @@ curl -X POST "http://localhost:8000/predict/risk" \
 Tree-based models (XGBoost, Random Forest) consistently outperform neural networks on tabular medical data. They are also faster to train, easier to interpret with SHAP, and require far less data. Deep learning will be added as a future extension.
 
 **Why two datasets?**
-The Pima dataset has diagnostic measurements but no treatment history — you cannot recommend medication from it. The 130-US dataset has medication columns (`insulin`, `metformin` etc.) that make recommendation meaningful.
+The Pima dataset has diagnostic measurements but no treatment history, we cannot recommend medication from it. The 130-US dataset has medication columns (`insulin`, `metformin` etc.) that make recommendation meaningful.
 
 **Why median imputation for zeros in Pima?**
 Columns like `Glucose` and `BMI` use `0` as a placeholder for missing data. We replace zeros with `NaN` then impute with the column median rather than mean because medical measurements are typically skewed.
@@ -279,11 +256,11 @@ The Pima dataset is 65/35 imbalanced. A model that always predicts "no diabetes"
 
 | Model | Type | ROC-AUC | RMSE |
 |---|---|---|---|
-| XGBoost | Classification | 0.847 | — |
-| LightGBM | Classification | 0.841 | — |
-| Random Forest | Classification | 0.831 | — |
-| XGBoost | Regression | — | 8.3 |
-| K-Means (K=3) | Clustering | Silhouette: 0.61 | — |
+| XGBoost | Classification | - | — |
+| LightGBM | Classification | -- | — |
+| Random Forest | Classification | -- | — |
+| XGBoost | Regression | — | -- |
+| K-Means (K=3) | Clustering | Silhouette: -- | — |
 
 ---
 
